@@ -7,3 +7,5 @@ COPY . .
 ENV PLAYWRIGHT_STATE_DIR=/app/playwright_state
 RUN playwright install --with-deps
 EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
