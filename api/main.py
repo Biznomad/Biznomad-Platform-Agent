@@ -7,6 +7,7 @@ from sqlalchemy import text
 
 from db import engine
 from rag import embed_texts, answer
+from ingest.thinkific import ingest_thinkific
 from ingest.util_media import (
     download_bytes,
     video_to_mp3,
