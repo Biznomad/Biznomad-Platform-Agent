@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Course Agent</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 24px;
+      max-width: 900px;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+    }
+    pre {
+      background: #f6f6f6;
+      padding: 12px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+    form {
+      margin-bottom: 24px;
+    }
+    .row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Course Agent</h1>
+  <form id="chat">
+    <textarea name="prompt" placeholder="Ask about your course content..."></textarea><br />
+    <button type="submit">Ask</button>
+  </form>
+  <div id="out"></div>
+  <hr />
+  <h2>Ingest Thinkific</h2>
+  <form id="ing">
+    <div class="row">
+      <input name="base_url" placeholder="https://YOUR.thinkific.com" style="width: 40%" />
+      <input name="email" placeholder="email" />
+      <input name="password" type="password" placeholder="password" />
+      <button>Ingest</button>
+    </div>
+  </form>
+  <div id="ingout"></div>
+  <script>
+    // Chat form submission: send query to /chat and display response.
+    document.getElementById('chat').onsubmit = async function (e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const res = await fetch('/chat', { method: 'POST', body: fd });
+      const data = await res.json();
+      document.getElementById('out').innerHTML =
+        '<h3>Answer</h3><pre>' +
+        data.answer +
+        '</pre><h4>Citations</h4><pre>' +
+        JSON.stringify(data.citations, null, 2) +
+        '</pre>';
+    };
+    // Ingestion form submission: send Thinkific credentials and report result.
+    document.getElementById('ing').onsubmit = async function (e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const res = await fetch('/ingest/thinkific', { method: 'POST', body: fd });
+      const data = await res.json();
+      document.getElementById('ingout').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    };
+  </script>
+</body>
+</html>
