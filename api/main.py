@@ -5,15 +5,15 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 
-from .db import engine
-from .rag import embed_texts, answer
-from .ingest.thinkific import ingest_thinkific
-from .ingest.util_media import (
+from db import engine
+from rag import embed_texts, answer
+from ingest.util_media import (
     download_bytes,
     video_to_mp3,
     whisper_transcribe,
     put_transcript,
 )
+
 
 app = FastAPI(title="Course Agent")
 templates = Jinja2Templates(directory="templates")
