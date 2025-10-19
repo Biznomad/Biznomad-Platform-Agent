@@ -1,0 +1,35 @@
+services:
+  api:
+    build: ./api
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on: [db, minio]
+    volumes:
+      - playwright_state:/app/playwright_state
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: coursehub
+      POSTGRES_USER: postgres
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    ports: ["9000:9000","9001:9001"]
+    volumes:
+      - minio:/data
+
+volumes:
+  pgdata:
+  minio:
+  playwright_state:
